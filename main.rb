@@ -100,14 +100,30 @@ bot = Cinch::Bot.new do
   end
 
 
-  on :message, /^.waifu/ do |m|
+  on :message, /^\.waifu$/ do |m|
     waifu = Waifu.new
     m.reply "#{m.user}, your waifu is #{waifu.name} (#{waifu.series})"
   end
 
-  on :message, /^.id/ do |m|
-    if m.user.authed?
-      m.reply "authed"
+  on :message, /^\.waifu-rps/ do |m|
+    one = Waifu.new
+    two = Waifu.new
+    m.reply "Battle Start! #{one.name} (#{one.series}) vs. #{two.name} (#{two.series})!"
+
+    moves = [[0, "rock"], [1, "paper"], [2, "scissors"]]
+    one_move = moves.sample
+    two_move = moves.sample
+
+    resp = "#{one.name} throws #{one_move[1]}! #{two.name} throws #{two_move[1]}!"
+    
+
+    winner = (3 + one_move[0] - two_move[0]) % 3;
+    if winner == 0
+      m.reply "#{resp} It's a draw!"
+    elsif winner == 1
+      m.reply "#{resp} #{one.name} wins!"
+    else
+      m.reply "#{resp} #{two.name} wins!"
     end
   end
 
