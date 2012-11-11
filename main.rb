@@ -3,6 +3,19 @@ require 'open-uri'
 require 'uri'
 require 'json'
 require 'yaml'
+require 'sqlite3'
+
+class Waifu
+   attr_accessor :name, :series
+   def initialize
+      @@db = SQLite3::Database.new("waifu.db")
+      count = @@db.execute("select count(*) from waifus")
+      n = Random.rand(count[0][0]) + 1
+      row = @@db.execute("select name, series from waifus where id = #{n}")
+      @name = row[0][0]
+      @series = row[0][1]
+   end
+end
 
 bot = Cinch::Bot.new do
   configure do |c|
@@ -83,6 +96,8 @@ bot = Cinch::Bot.new do
 
 
   on :message, /^.waifu/ do |m|
+    waifu = Waifu.new
+    m.reply "#{m.user}, your waifu is #{waifu.name} (#{waifu.series})"
   end
 
   on :message, /^.id/ do |m|
@@ -90,7 +105,6 @@ bot = Cinch::Bot.new do
       m.reply "authed"
     end
   end
-
 
 end
 
