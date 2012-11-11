@@ -17,9 +17,14 @@ class Waifu
    end
 end
 
+if ARGV.length != 1
+   abort "First argument must be a config file"  
+else
+    config = YAML::load(File.open(ARGV[0]))
+end
+
 bot = Cinch::Bot.new do
   configure do |c|
-    config = YAML::load(File.open("test.config"))
     c.server = config["server"]
     c.channels = config["channels"]
     c.nick = config["nick"]
